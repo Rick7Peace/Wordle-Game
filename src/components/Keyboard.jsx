@@ -29,7 +29,7 @@ function Keyboard({ handleKeyPress, guesses }) {
             <button
               key={key}
               onClick={() => handleKeyPress(key)}
-              className={`bg-gray-300 hover:bg-gray-400 text-black font-bold py-4 px-3 sm:py-2 sm:px-4 rounded-md transition-colors duration-200 ease-in-out text-xs sm:text-base uppercase ${getKeyColor(
+              className={`bg-gray-300 hover:bg-gray-400 dark:bg-gray-600 dark:text-white text-black font-bold py-4 px-3 sm:py-2 sm:px-4 rounded-md transition-colors duration-200 ease-in-out text-xs sm:text-base uppercase ${getKeyColor(
                 key
               )}`}
             >

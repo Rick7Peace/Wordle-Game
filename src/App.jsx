@@ -1,3 +1,4 @@
+import "./App.css";
 import { useState, useEffect } from "react";
 import WordGrid from "./components/WordGrid.jsx";
 import Keyboard from "./components/Keyboard.jsx";
@@ -145,7 +146,7 @@ const App = () => {
     <div
       className={`app min-h-screen flex flex-col items-center justify-start ${
         isDarkMode ? "dark" : ""
-      } bg-gray-100 p-4 pt-8`}
+      } bg-gray-100 p-4 pt-8 dark:bg-black`}
     >
       <h1 className="text-3xl font-bold text-green-500 mb-4">WORDLE</h1>
 
