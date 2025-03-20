@@ -1,8 +1,33 @@
-# React + Vite
+# Wordle Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Table of Contents
+Features
+Usage
+deployment link
+License
+Contact
 
-Currently, two official plugins are available:
+# Features
+Standard Wordle Gameplay: Guess a five-letter word in six attempts.
+Timer 300 second countdown
+Game mode - Easy, Medium, Hard
+Toggle Dark Mode
+Get Hint Button
+Reset Game Button
+Color-coded Feedback:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Usage
+Enter a five-letter word in the input field.
+Press Enter or click the "Guess" button.
+Observe the color-coded feedback.
+Continue guessing until you find the correct word or run out of attempts.
+
+# Deployment Link - https://main.d22b76ka2zje5o.amplifyapp.com/
+
+# License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+# Contact 
+
+Github Link https://github.com/Rick7Peace/Wordle
+Email marmolejo.ricardo@gmail.com
