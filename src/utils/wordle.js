@@ -1,8 +1,8 @@
-export const GREEN = "g";
-export const YELLOW = "y";
-export const BLACK = "b";
+const GREEN = "g";
+const YELLOW = "y";
+const BLACK = "b";
 
-export default class Wordle {
+class Wordle {
   word;
   constructor(word) {
     this.word = word;
@@ -35,17 +35,17 @@ export default class Wordle {
   
   letterRepeatedInGuess(guess, index) {
     let charCountInGuess = [];
+    let charCountInWordle = [];
+
     for (let i = 0; i < guess.length; i++) {
       if (guess[i] === guess[index]) {
         charCountInGuess.push(i);
       }
-    }
-    let charCountInWordle = [];
-    for (let i = 0; i < this.word.length; i++) {
       if (this.word[i] === guess[index]) {
         charCountInWordle.push(i);
       }
     }
+ 
     if (charCountInGuess.length === 1) {
       return false;
     }
@@ -59,4 +59,4 @@ export default class Wordle {
   }
 }
 
-// module.exports = { Wordle, GREEN, YELLOW, BLACK };
+export { Wordle, GREEN, YELLOW, BLACK };

@@ -1,5 +1,5 @@
 // const { Wordle, GREEN, YELLOW, BLACK } = require("../tools/index.js");
-import  Wordle, { GREEN, YELLOW, BLACK } from "../src/"
+import  { Wordle,  GREEN, YELLOW, BLACK } from "../src/utils/wordle.js";
 
 
 describe("Wordle", () => {

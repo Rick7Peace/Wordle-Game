@@ -1,22 +1,24 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import WordGrid from "./components/WordGrid.jsx";
 import Keyboard from "./components/Keyboard.jsx";
 import Result from "./components/Result.jsx";
-import fiveLetterWords from "./tools/fiveLetterWords.js";
-import Wordle, { GREEN, YELLOW, BLACK } from "./tools/index.js";
+import fiveLetterWords from "./utils/fiveLetterWords.js";
+import { Wordle, GREEN, YELLOW, BLACK } from "./utils/wordle.js";
 
 // Sound effects
-const correctSound = new Audio('path-to-correct-sound.mp3');
-const incorrectSound = new Audio('path-to-incorrect-sound.mp3');
+// const correctSound = new Audio('path-to-correct-sound.mp3');
+// const incorrectSound = new Audio('path-to-incorrect-sound.mp3');
 
 const App = () => {
-  const [targetWord, setTargetWord] = useState(fiveLetterWords[Math.floor(Math.random() * fiveLetterWords.length)]);
+  const [targetWord, setTargetWord] = useState(
+    fiveLetterWords[Math.floor(Math.random() * fiveLetterWords.length)]
+  );
   const [guesses, setGuesses] = useState([]);
   const [currentGuess, setCurrentGuess] = useState("");
   const [isGameOver, setIsGameOver] = useState(false);
   const [result, setResult] = useState("");
   const [timeRemaining, setTimeRemaining] = useState(300); // 5 minutes timer
-  const [difficulty, setDifficulty] = useState('medium');
+  const [difficulty, setDifficulty] = useState("medium");
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [hintUsed, setHintUsed] = useState(false);
   const [streak, setStreak] = useState(0); // Track streak
@@ -26,7 +28,10 @@ const App = () => {
   // Handle Timer
   useEffect(() => {
     if (timeRemaining > 0 && !isGameOver) {
-      const timer = setInterval(() => setTimeRemaining((prev) => prev - 1), 1000);
+      const timer = setInterval(
+        () => setTimeRemaining((prev) => prev - 1),
+        1000
+      );
       return () => clearInterval(timer);
     } else if (timeRemaining === 0) {
       setIsGameOver(true);
@@ -125,7 +130,9 @@ const App = () => {
   };
 
   const resetGame = () => {
-    setTargetWord(fiveLetterWords[Math.floor(Math.random() * fiveLetterWords.length)]);
+    setTargetWord(
+      fiveLetterWords[Math.floor(Math.random() * fiveLetterWords.length)]
+    );
     setGuesses([]);
     setCurrentGuess("");
     setIsGameOver(false);
@@ -135,13 +142,15 @@ const App = () => {
   };
 
   return (
-    <div className={`app min-h-screen flex flex-col items-center justify-start ${isDarkMode ? 'dark' : ''} bg-gray-100 p-4 pt-8`}>
+    <div
+      className={`app min-h-screen flex flex-col items-center justify-start ${
+        isDarkMode ? "dark" : ""
+      } bg-gray-100 p-4 pt-8`}
+    >
       <h1 className="text-3xl font-bold text-green-500 mb-4">WORDLE</h1>
 
       {/* Timer Display */}
-      <div className="timer text-lg mb-4">
-        Time remaining: {timeRemaining}s
-      </div>
+      <div className="timer text-lg mb-4">Time remaining: {timeRemaining}s</div>
 
       {/* Difficulty Selector */}
       <div className="mb-4">
@@ -161,7 +170,10 @@ const App = () => {
       </div>
 
       {/* Dark Mode Toggle */}
-      <button onClick={() => setIsDarkMode(!isDarkMode)} className="mb-4 bg-gray-200 p-2 rounded">
+      <button
+        onClick={() => setIsDarkMode(!isDarkMode)}
+        className="mb-4 bg-gray-200 p-2 rounded"
+      >
         Toggle Dark Mode
       </button>
 
