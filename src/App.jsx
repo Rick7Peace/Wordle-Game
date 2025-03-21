@@ -18,13 +18,33 @@ const App = () => {
   const [currentGuess, setCurrentGuess] = useState("");
   const [isGameOver, setIsGameOver] = useState(false);
   const [result, setResult] = useState("");
-  const [timeRemaining, setTimeRemaining] = useState(300); // 5 minutes timer
+  const [timeRemaining, setTimeRemaining] = useState(200); // Default to Medium (200 seconds)
   const [difficulty, setDifficulty] = useState("medium");
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [hintUsed, setHintUsed] = useState(false);
+  const [hintUsed, setHintUsed] = useState(0); // Track the number of hints used
   const [streak, setStreak] = useState(0); // Track streak
 
   const wordle = new Wordle(targetWord);
+
+  // Update timer and hints based on difficulty
+  useEffect(() => {
+    switch (difficulty) {
+      case "hard":
+        setTimeRemaining(100); // 100 seconds for hard
+        setHintUsed(0); // 1 hint for hard
+        break;
+      case "medium":
+        setTimeRemaining(200); // 200 seconds for medium
+        setHintUsed(0); // 2 hints for medium
+        break;
+      case "easy":
+        setTimeRemaining(300); // 300 seconds for easy
+        setHintUsed(0); // 3 hints for easy
+        break;
+      default:
+        setTimeRemaining(200); // Default to 200 seconds (medium)
+    }
+  }, [difficulty]);
 
   // Handle Timer
   useEffect(() => {
@@ -122,11 +142,11 @@ const App = () => {
   };
 
   const getHint = () => {
-    if (!hintUsed) {
+    if (hintUsed < (difficulty === "easy" ? 3 : difficulty === "medium" ? 2 : 1)) {
       alert(`Hint: The first letter is ${targetWord[0]}`);
-      setHintUsed(true);
+      setHintUsed(hintUsed + 1);
     } else {
-      alert("You've already used your hint!");
+      alert("You've already used your hints!");
     }
   };
 
@@ -138,8 +158,8 @@ const App = () => {
     setCurrentGuess("");
     setIsGameOver(false);
     setResult("");
-    setTimeRemaining(300);
-    setHintUsed(false);
+    setTimeRemaining(difficulty === "hard" ? 100 : difficulty === "medium" ? 200 : 300);
+    setHintUsed(0);
   };
 
   return (
@@ -151,7 +171,11 @@ const App = () => {
       <h1 className="text-3xl font-bold text-green-500 mb-4">WORDLE</h1>
 
       {/* Timer Display */}
-      <div className="timer text-lg mb-4">Time remaining: {timeRemaining}s</div>
+      <div
+        className={`timer text-lg mb-4 ${isDarkMode ? "text-white" : "text-black"}`}
+      >
+        Time remaining: {timeRemaining}s
+      </div>
 
       {/* Difficulty Selector */}
       <div className="mb-4">
