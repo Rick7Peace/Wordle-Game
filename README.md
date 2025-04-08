@@ -8,7 +8,8 @@ License
 Contact
 
 # Features
-Standard Wordle Gameplay: Guess a five-letter word in six attempts.
+Standard Wordle Gameplay: 
+Guess a five-letter word in six attempts.
 Timer 300 second countdown
 Game mode - Easy, Medium, Hard
 Toggle Dark Mode
@@ -29,6 +30,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 # Contact 
 
-Github Link https://github.com/Rick7Peace/Wordle
+Github Link https://github.com/Rick7Peace/Wordle-Game
 
 Email marmolejo.ricardo@gmail.com
