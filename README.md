@@ -22,7 +22,7 @@ Press Enter or click the "Guess" button.
 Observe the color-coded feedback.
 Continue guessing until you find the correct word or run out of attempts.
 
-# Deployment Link - https://main.d22b76ka2zje5o.amplifyapp.com/
+# Deployment Link - https://main.d1p7knzq5bizzb.amplifyapp.com/
 
 # License
 This project is licensed under the MIT License - see the LICENSE file for details.
@@ -30,4 +30,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 # Contact 
 
 Github Link https://github.com/Rick7Peace/Wordle
+
 Email marmolejo.ricardo@gmail.com
