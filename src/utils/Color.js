@@ -6,12 +6,6 @@ export const getColorClass = (color) => {
       return "bg-yellow-500";
     case "b":  // Black (Incorrect letter)
       return "bg-gray-400";
-    // case "w":  // White (Used for hints or custom behavior)
-    //   return "bg-white"; 
-    // case "r":  // Red (Used for invalid guesses)
-    //   return "bg-red-500"; 
-    // default:
-    //   return "bg-gray-300"; // Default color if no valid color is passed
   }
 };
 
