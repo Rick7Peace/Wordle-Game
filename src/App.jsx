@@ -1,66 +1,28 @@
 import "./App.css";
-import { useState, useEffect } from "react";
-import WordGrid from "./components/WordGrid.jsx";
-import Keyboard from "./components/Keyboard.jsx";
-import Result from "./components/Result.jsx";
+import { useState, useEffect, useCallback } from "react";
+import LetterGrid from "./components/LetterGrid.jsx";
+import KeyPad from "./components/KeyPad.jsx";
+import GameStatus from "./components/GameStatus.jsx";
 import fiveLetterWords from "./utils/fiveLetterWords.js";
-import { Wordle, GREEN, YELLOW, BLACK } from "./utils/wordle.js";
-
-// Sound effects
-// const correctSound = new Audio('path-to-correct-sound.mp3');
-// const incorrectSound = new Audio('path-to-incorrect-sound.mp3');
+import { Wordle, GREEN, YELLOW, BLACK } from "./utils/index.js";
 
 const App = () => {
-  const [targetWord, setTargetWord] = useState(
+  const [targetWord, setTargetWord] = useState(() =>
     fiveLetterWords[Math.floor(Math.random() * fiveLetterWords.length)]
   );
   const [guesses, setGuesses] = useState([]);
   const [currentGuess, setCurrentGuess] = useState("");
   const [isGameOver, setIsGameOver] = useState(false);
   const [result, setResult] = useState("");
-  const [timeRemaining, setTimeRemaining] = useState(200); // Default to Medium (200 seconds)
+  const [timeRemaining, setTimeRemaining] = useState(200);
   const [difficulty, setDifficulty] = useState("medium");
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [hintUsed, setHintUsed] = useState(0); // Track the number of hints used
-  const [streak, setStreak] = useState(0); // Track streak
+  const [hintUsed, setHintUsed] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [hintLetters, setHintLetters] = useState([]);
 
   const wordle = new Wordle(targetWord);
 
-  // Update timer and hints based on difficulty
-  useEffect(() => {
-    switch (difficulty) {
-      case "hard":
-        setTimeRemaining(100); // 100 seconds for hard
-        setHintUsed(0); // 1 hint for hard
-        break;
-      case "medium":
-        setTimeRemaining(200); // 200 seconds for medium
-        setHintUsed(0); // 2 hints for medium
-        break;
-      case "easy":
-        setTimeRemaining(300); // 300 seconds for easy
-        setHintUsed(0); // 3 hints for easy
-        break;
-      default:
-        setTimeRemaining(200); // Default to 200 seconds (medium)
-    }
-  }, [difficulty]);
-
-  // Handle Timer
-  useEffect(() => {
-    if (timeRemaining > 0 && !isGameOver) {
-      const timer = setInterval(
-        () => setTimeRemaining((prev) => prev - 1),
-        1000
-      );
-      return () => clearInterval(timer);
-    } else if (timeRemaining === 0) {
-      setIsGameOver(true);
-      setResult("Time's up! You lost.");
-    }
-  }, [timeRemaining, isGameOver]);
-
-  // Handle Local Storage
   useEffect(() => {
     const savedState = JSON.parse(localStorage.getItem("wordleState"));
     if (savedState) {
@@ -70,34 +32,53 @@ const App = () => {
       setIsGameOver(savedState.isGameOver);
       setResult(savedState.result);
       setTimeRemaining(savedState.timeRemaining);
+      setStreak(savedState.streak);
+      setDifficulty(savedState.difficulty);
+      setIsDarkMode(savedState.isDarkMode || false); // Default to false if no value is found
     }
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(
-      "wordleState",
-      JSON.stringify({
-        targetWord,
-        guesses,
-        currentGuess,
-        isGameOver,
-        result,
-        timeRemaining,
-      })
-    );
-  }, [targetWord, guesses, currentGuess, isGameOver, result, timeRemaining]);
+    localStorage.setItem("wordleState", JSON.stringify({
+      targetWord, guesses, currentGuess, isGameOver, result, timeRemaining, streak, difficulty, isDarkMode
+    }));
+  }, [targetWord, guesses, currentGuess, isGameOver, result, timeRemaining, streak, difficulty, isDarkMode]);
 
-  const handleKeyPress = (key) => {
+  useEffect(() => {
+    const difficultySettings = {
+      hard: { time: 100, hints: 2 },
+      medium: { time: 200, hints: 4 },
+      easy: { time: 300, hints: 6 },
+    };
+    const settings = difficultySettings[difficulty] || difficultySettings.medium;
+    setTimeRemaining(settings.time);
+    setHintUsed(settings.hints);
+    setHintLetters([]);
+  }, [difficulty]);
+
+  useEffect(() => {
+    if (timeRemaining > 0 && !isGameOver) {
+      const timer = setInterval(() => setTimeRemaining((prev) => prev - 1), 1000);
+      return () => clearInterval(timer);
+    } else if (timeRemaining === 0 || isGameOver) {
+      setIsGameOver(true);
+      if (timeRemaining === 0) {
+        setResult("Time's up! You lost.");
+      }
+    }
+  }, [timeRemaining, isGameOver]);
+
+  const handleKeyPress = useCallback((key) => {
     if (key === "ENTER") {
       handleGuessSubmit(currentGuess);
     } else if (key === "⌫") {
-      setCurrentGuess(currentGuess.slice(0, -1));
+      setCurrentGuess((prev) => prev.slice(0, -1));
     } else if (currentGuess.length < 5) {
-      setCurrentGuess(currentGuess + key);
+      setCurrentGuess((prev) => prev + key);
     }
-  };
+  }, [currentGuess]);
 
-  const handleGuessSubmit = (guess) => {
+  const handleGuessSubmit = useCallback((guess) => {
     if (guess.length !== 5) {
       alert("Your guess must be 5 letters long!");
       return;
@@ -108,11 +89,7 @@ const App = () => {
       return;
     }
 
-    if (
-      guesses.some(
-        (g) => g.map((letterObj) => letterObj.letter).join("") === guess
-      )
-    ) {
+    if (guesses.some((g) => g.map((letterObj) => letterObj.letter).join("") === guess)) {
       alert("You've already guessed that word!");
       return;
     }
@@ -123,103 +100,105 @@ const App = () => {
       color: checkResult[index],
     }));
 
-    setGuesses([...guesses, formattedGuess]);
+    setGuesses((prev) => [...prev, formattedGuess]);
     setCurrentGuess("");
 
     if (checkResult.every((res) => res === GREEN)) {
-      correctSound.play();
-      setStreak(streak + 1);
+      setStreak((prev) => prev + 1);
       setIsGameOver(true);
       setResult("You Win!");
-    } else {
-      incorrectSound.play();
     }
 
     if (guesses.length >= 5) {
       setIsGameOver(true);
       setResult(`Game Over! The word was ${targetWord}`);
     }
-  };
+  }, [guesses, wordle, targetWord]);
 
-  const getHint = () => {
-    if (hintUsed < (difficulty === "easy" ? 3 : difficulty === "medium" ? 2 : 1)) {
-      alert(`Hint: The first letter is ${targetWord[0]}`);
-      setHintUsed(hintUsed + 1);
-    } else {
-      alert("You've already used your hints!");
+  const getHint = useCallback(() => {
+    const maxHints = difficulty === "easy" ? 6 : difficulty === "medium" ? 4 : 2;
+    if (hintUsed >= maxHints) {
+      alert("You've already used all your hints!");
+      return;
     }
-  };
 
-  const resetGame = () => {
-    setTargetWord(
-      fiveLetterWords[Math.floor(Math.random() * fiveLetterWords.length)]
-    );
+      const remainingLetters = targetWord.split("").filter((letter, index) => !hintLetters.includes(index));
+      if (remainingLetters.length > 0) {
+        const randomIndex = targetWord.indexOf(remainingLetters[0]);
+        setHintLetters((prev) => [...prev, randomIndex]);
+        alert(`Hint: The letter at position ${randomIndex + 1} is ${targetWord[randomIndex]}`);
+        setHintUsed((prev) => prev + 1);
+      } else {
+        alert("No more hints available!");
+      }
+  }, [hintUsed, difficulty, targetWord, hintLetters]);
+
+  const resetGame = useCallback(() => {
+    setTargetWord(fiveLetterWords[Math.floor(Math.random() * fiveLetterWords.length)]);
     setGuesses([]);
     setCurrentGuess("");
     setIsGameOver(false);
     setResult("");
     setTimeRemaining(difficulty === "hard" ? 100 : difficulty === "medium" ? 200 : 300);
     setHintUsed(0);
-  };
+    setHintLetters([]);
+  }, [difficulty]);
 
   return (
-    <div
-      className={`app min-h-screen flex flex-col items-center justify-start ${
-        isDarkMode ? "dark" : ""
-      } bg-gray-100 p-4 pt-8 dark:bg-black`}
-    >
+    <div className={`app min-h-screen flex flex-col items-center justify-start ${isDarkMode ? "dark" : ""} bg-gray-100 p-4 pt-8 dark:bg-black`}>
       <h1 className="text-3xl font-bold text-green-500 mb-4">WORDLE</h1>
 
-      {/* Timer Display */}
-      <div
-        className={`timer text-lg mb-4 ${isDarkMode ? "text-white" : "text-black"}`}
-      >
-        Time remaining: {timeRemaining}s
+      <div className={`timer text-lg mb-4 ${isDarkMode ? "text-white" : "text-black"}`}>
+        {`Time remaining: ${timeRemaining}s`}
       </div>
 
-      {/* Difficulty Selector */}
       <div className="mb-4">
         <select
           value={difficulty}
           onChange={(e) => setDifficulty(e.target.value)}
-          className="bg-gray-200 p-2 rounded"
+          className= "bg-gray-200 p-2 rounded text-black dark:text-white dark:bg-gray-700"
         >
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
+          {["easy", "medium", "hard"].map((level) => (
+            <option key={level} value={level}>
+              {level.charAt(0).toUpperCase() + level.slice(1)}
+            </option>
+          ))}
         </select>
       </div>
 
       <div className="mb-12">
-        <WordGrid guesses={guesses} currentGuess={currentGuess} />
+        <LetterGrid guesses={guesses} currentGuess={currentGuess} isDarkMode={isDarkMode} />
       </div>
 
-      {/* Dark Mode Toggle */}
       <button
-        onClick={() => setIsDarkMode(!isDarkMode)}
-        className="mb-4 bg-gray-200 p-2 rounded"
+        onClick={() => setIsDarkMode((prev) => !prev)}
+        className={`mb-4 p-2 rounded ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`}
       >
-        Toggle Dark Mode
+        {isDarkMode ? "Disable Dark Mode" : "Enable Dark Mode"}
       </button>
 
-      {/* Hint Button */}
-      <button onClick={getHint} className="mb-4 bg-blue-200 p-2 rounded">
+      <button
+        onClick={getHint}
+        className={`mb-4 p-2 rounded ${isDarkMode ? 'bg-blue-500' : 'bg-blue-200'}`}
+      >
         Get Hint
       </button>
 
-      {/* Reset Button */}
-      <button onClick={resetGame} className="mb-4 bg-red-200 p-2 rounded">
+      <button
+        onClick={resetGame}
+        className={`mb-4 p-2 rounded ${isDarkMode ? 'bg-red-500' : 'bg-red-200'}`}
+      >
         Reset Game
       </button>
 
       {isGameOver ? (
-        <Result result={result} />
+        <GameStatus result={result} isDarkMode={isDarkMode} />
       ) : (
-        <Keyboard
+        <KeyPad
           guesses={guesses}
           currentGuess={currentGuess}
-          setCurrentGuess={setCurrentGuess}
           handleKeyPress={handleKeyPress}
+          isDarkMode={isDarkMode}
         />
       )}
     </div>
