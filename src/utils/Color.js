@@ -4,7 +4,9 @@ export const getColorClass = (color) => {
       return "bg-green-500";
     case "y":  // Yellow (Correct letter but wrong position)
       return "bg-yellow-500";
-    case "b":  // Black (Incorrect letter)
+    case "b":  // black (Incorrect letter)
+      return "bg-blue-100";
+    default:  
       return "bg-gray-400";
   }
 };
@@ -21,7 +23,7 @@ export const createGrid = (guesses, currentGuess) => {
       
     return [...Array(cols)].map((_, colIndex) => {
       const letter = guess[colIndex]?.letter || guess[colIndex] || "";
-      const color = guess[colIndex]?.color || "b"; // Default to 'b' for black
+      const color = guess[colIndex]?.color || ""; // Default to 'b' for black
       return { letter, color };
     });
   });

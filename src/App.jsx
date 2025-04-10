@@ -193,14 +193,14 @@ const App = () => {
 
         <button
           onClick={() => setIsDarkMode((prev) => !prev)}
-          className={`p-2 rounded ${isDarkMode ? 'bg-gray-700' : 'bg-gray-700'}`}
+          className="p-2 rounded bg-gray-200 dark:bg-gray-700 text-black dark:text-white"
         >
           {isDarkMode ? "Disable Dark Mode" : "Enable Dark Mode"}
         </button>
 
         <button
           onClick={getHint}
-          className={`p-2 rounded ${isDarkMode ? 'bg-blue-500' : 'bg-blue-200'}`}
+          className="p-2 rounded bg-blue-200 dark:bg-blue-700 text-black dark:text-white"
         >
           Get Hint
         </button>
@@ -224,8 +224,8 @@ const App = () => {
 
       <button
         onClick={resetGame}
-        className={`mt-12 p-2 rounded ${isDarkMode ? 'bg-red-500' : 'bg-red-200'}`}
-      >
+        className="p-2 rounded bg-red-200 dark:bg-red-700 text-black dark:text-white"
+        >
         Reset Game
       </button>
     </div>

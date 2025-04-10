@@ -13,22 +13,28 @@ class Wordle {
       return [];
     }
     if (guess === this.word) {
-      return [GREEN, GREEN, GREEN, GREEN, GREEN];
+      return Array(this.word.length).fill(GREEN);
     }
     let result = [];
 
     for (let i = 0; i < guess.length; i++) {
+      if (guess[i] === "") {
+        result.push("");
+        continue;
+      }
+      if (!this.word.includes(guess[i])) {
+        result.push(BLACK);
+        continue;
+      }
       if (guess[i] === this.word[i]) {
         result.push(GREEN);
-      } else if (this.word.includes(guess[i])) {
+      }
+      
         if (this.letterRepeatedInGuess(guess, i)) {
           result.push(BLACK);
         } else {
           result.push(YELLOW);
         }
-      } else {
-        result.push(BLACK);
-      }
     }
     return result;
   }

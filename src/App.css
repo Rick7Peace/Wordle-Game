@@ -16,15 +16,6 @@ body {
     background-color: #121212;
   }
   
-  button {
-    background-color: #e5e5e5;
-  }
-  
-  /* Dark mode button styles */
-  button.dark {
-    background-color: #333;
-  }
-  
   .timer.dark {
     color: white;
   }

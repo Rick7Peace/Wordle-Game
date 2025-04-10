@@ -15,7 +15,7 @@ const Keypad = ({ handleKeyPress, guesses }) => {
         return getColorClass(letterObj.color);
       }
     }
-    return "";
+    return "bg-gray-300";
   };
 
   return (
@@ -24,11 +24,12 @@ const Keypad = ({ handleKeyPress, guesses }) => {
         <div key={rowIndex} className="keypad-row flex space-x-1">
           {row.map((key) => {
             const colorClass = keyColor(key);
+            console.log("Key Color Class:", colorClass);
             return (
               <button
                 key={key}
                 onClick={() => handleKeyPress(key)}
-                className={`bg-gray-400 hover:bg-gray-300 dark:bg-gray-500 text-black font-bold py-4 px-3 sm:py-2 sm:px-4 rounded-md transition-colors duration-200 ease-in-out text-xs sm:text-base uppercase ${colorClass}`}
+                className={`hover:bg-gray-300 dark:bg-gray-500 text-black font-bold py-4 px-3 sm:py-2 sm:px-4 rounded-md transition-colors duration-200 ease-in-out text-xs sm:text-base uppercase ${colorClass}`}
               >
                 {key}
               </button>
