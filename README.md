@@ -13,7 +13,7 @@ Guess a five-letter word in six attempts.
 Timer 300 second countdown
 Game mode - Easy, Medium, Hard
 Toggle Dark Mode
-Get Hint Button
+Get Hint Button Easy 3, Medium 2, Hard 1
 Reset Game Button
 Color-coded Feedback:
 
